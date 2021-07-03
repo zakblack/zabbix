@@ -82,24 +82,24 @@ spec:
 ---
 
 
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ReplicationController
 metadata:
   name: zabbix-web
-  namespace: zabbixcluster
+  labels:
+    app: zabbix
+    tier: frontend
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: zabbix
+  replicas: 3
   template:
     metadata:
       labels:
         name: zabbix-web
+        namespace: zabbixcluster
         app: zabbix
     spec:
       containers:
-      - name: zabbix-web
+        - name: zabbix-web
           image: monitoringartist/zabbix-xxl:latest
           ports:
           - containerPort: 80
@@ -118,27 +118,24 @@ spec:
             value: "false"
           - name: ZW_enabled
             value: "true"
-
-
 ---
-
-
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ReplicationController
 metadata:
   name: zabbix-db
-  namespace: zabbixcluster
+  labels:
+    app: zabbix
+    tier: zabbix-db
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: zabbix
   template:
     metadata:
       labels:
         name: zabbix-db
+        namespace: zabbixcluster
         app: zabbix
-   spec:
+        tier: zabbix-db
+    spec:
       containers:
         - name: zabbix-db
           image: monitoringartist/zabbix-db-mariadb
@@ -158,22 +155,19 @@ spec:
         emptyDir:
           medium: Memory
 ---
-
-
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ReplicationController
 metadata:
   name: zabbix-server
-  namespace: zabbixcluster
+  labels:
+    app: zabbix
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: zabbix
   template:
     metadata:
       labels:
         name: zabbix-server
+        namespace: zabbixcluster
         app: zabbix
     spec:
       containers:
