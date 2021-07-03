@@ -15,7 +15,7 @@ metadata:
 spec:
   rules:
   - host: zabbix.local
-  - http:
+    http:
       paths:
       - path: /
         pathType: Prefix
