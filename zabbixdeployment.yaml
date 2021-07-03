@@ -10,16 +10,19 @@ kind: Ingress
 metadata:
   name: zabbix-ingress
   namespace: zabbixcluster
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx
   rules:
-  - host: zabbix.local
-    http:
+  - http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: zabbix-web
-          servicePort: 80
+          service:
+            name: zabbix-web
+            port:
+              number: 80
         
 ---
 
