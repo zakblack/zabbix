@@ -5,32 +5,28 @@ metadata:
 
 ---
 
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: zabbix-ingress
+  name: zabbix-web2
   namespace: zabbixcluster
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
   - host: zabbix.local
     http:
       paths:
       - path: /
-        pathType: Prefix
         backend:
-          service:
-            name: zabbix-web
-            port:
-              number: 80
+          serviceName: zabbix-web-svc
+          servicePort: 80
         
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: zabbix-web
+  name: zabbix-web-svc
   namespace: zabbixcluster
   labels:
     app: zabbix
@@ -41,7 +37,7 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: zabbix
+    app: zabbix-web
 ---
 
 ---
@@ -49,7 +45,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: zabbix-server
+  name: zabbix-server-svc
   namespace: zabbixcluster
   labels:
     name: zabbix-server
@@ -70,7 +66,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: zabbix-db
+  name: zabbix-db-svc
   namespace: zabbixcluster
   labels:
     app: zabbix
@@ -92,7 +88,7 @@ metadata:
   name: zabbix-web
   namespace: zabbixcluster
   labels:
-    app: zabbix
+    app: zabbix-web
     tier: frontend
 spec:
   replicas: 3
@@ -100,7 +96,7 @@ spec:
     metadata:
       labels:
         name: zabbix-web
-        app: zabbix
+        app: zabbix-web
     spec:
       containers:
         - name: zabbix-web
@@ -113,9 +109,9 @@ spec:
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db
+            value: zabbix-db-svc
           - name: ZW_ZBX_SERVER
-            value: zabbix-server
+            value: zabbix-server-svc
           - name: ZS_enabled
             value: "false"
           - name: ZA_enabled
@@ -129,7 +125,7 @@ metadata:
   name: zabbix-db
   namespace: zabbixcluster
   labels:
-    app: zabbix
+    app: zabbix-db
     tier: zabbix-db
 spec:
   replicas: 1
@@ -137,7 +133,7 @@ spec:
     metadata:
       labels:
         name: zabbix-db
-        app: zabbix
+        app: zabbix-db
         tier: zabbix-db
     spec:
       containers:
@@ -172,7 +168,7 @@ spec:
     metadata:
       labels:
         name: zabbix-server
-        app: zabbix
+        app: zabbix-server
     spec:
       containers:
         - name: zabbix-server
@@ -190,7 +186,7 @@ spec:
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db
+            value: zabbix-db-svc
           - name: ZS_enabled
             value: "true"
           - name: ZA_enabled
