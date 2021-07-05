@@ -10,10 +10,12 @@ spec:
   - host: zabbix.local
     http:
       paths:
-      - path: /
+      - pathType: Prefix
         backend:
-          serviceName: zabbix-web
-          servicePort: 80
+          service:
+            name: zabbix-db
+            port:
+              number: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -27,7 +29,9 @@ spec:
   - host: zabbix.local
     http:
       paths:
-      - path: /
+      - pathType: Prefix
         backend:
-          serviceName: zabbix-web
-          servicePort: 80
+          service:
+            name: zabbix-db
+            port:
+              number: 80
