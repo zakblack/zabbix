@@ -16,7 +16,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      run: zabbix-web
+      app: zabbix-web
   replicas: 2
   template:
     metadata:
@@ -54,7 +54,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      run: zabbix-db
+      app: zabbix-db
   replicas: 1
   template:
     metadata:
@@ -96,7 +96,7 @@ spec:
   template:
     metadata:
       labels:
-        run: zabbix-server
+        app: zabbix-server
     spec:
       containers:
       - name: zabbix-server
