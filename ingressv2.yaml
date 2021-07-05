@@ -10,6 +10,7 @@ spec:
   - host: zabbix.local
     http:
       paths:
+      - path: /
       - pathType: Prefix
         backend:
           service:
@@ -29,6 +30,7 @@ spec:
   - host: zabbix.local
     http:
       paths:
+      - path: /
       - pathType: Prefix
         backend:
           service:
