@@ -24,8 +24,8 @@ spec:
         run: zabbix-web
     spec:
       containers:
-      - name: my-nginx
-        image: nginx
+      - name: zabbix-web
+        image: monitoringartist/zabbix-xxl:latest
         ports:
         - containerPort: 80
         env:
