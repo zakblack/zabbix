@@ -34,9 +34,9 @@ spec:
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db
+            value: zabbix-db-svc
           - name: ZW_ZBX_SERVER
-            value: zabbix-server
+            value: zabbix-server-svc
           - name: ZS_enabled
             value: "false"
           - name: ZA_enabled
@@ -62,7 +62,7 @@ spec:
         app: zabbix-db
     spec:
       containers:
-      - name: zabbix-web
+      - name: zabbix-db
         image: monitoringartist/zabbix-db-mariadb
         ports:
           - containerPort: 3306
@@ -114,7 +114,7 @@ spec:
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db
+            value: zabbix-db-svc
           - name: ZS_enabled
             value: "true"
           - name: ZA_enabled
