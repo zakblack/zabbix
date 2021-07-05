@@ -1,17 +1,33 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: zabbix-ingress
+  name: zabbixweb1
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - http:
+  - host: zabbix.local
+    http:
       paths:
       - path: /
-        pathType: Prefix
         backend:
-          service:
-            name: zabbix-web
-            port:
-              number: 80
+          serviceName: zabbix-web
+          servicePort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zabbixweb2
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: zabbix.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zabbix-web
+          servicePort: 80
