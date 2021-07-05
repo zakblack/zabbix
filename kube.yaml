@@ -1,15 +1,9 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: zabbixcluster
 
----
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zabbix-web
-  namespace: zabbixcluster
 spec:
   selector:
     matchLabels:
@@ -21,19 +15,19 @@ spec:
         run: zabbix-web
     spec:
       containers:
-      - name: zabbix-web
-        image: monitoringartist/zabbix-xxl:latest
-          ports:
-          - containerPort: 80
-          env:
+      - name: my-nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        env:
           - name: ZS_DBUser
             value: zabbix
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db-svc
+            value: zabbix-db
           - name: ZW_ZBX_SERVER
-            value: zabbix-server-svc
+            value: zabbix-server
           - name: ZS_enabled
             value: "false"
           - name: ZA_enabled
@@ -61,15 +55,15 @@ spec:
       containers:
       - name: zabbix-web
         image: monitoringartist/zabbix-db-mariadb
-          ports:
+        ports:
           - containerPort: 3306
             name: mariadb
-          env:
+        env:
           - name: MARIADB_USER
             value: zabbix
           - name: MARIADB_PASS
             value: my_password
-          volumeMounts:
+        volumeMounts:
           - name: zabbix-db-storage
             mountPath: /var/lib/mysql
       volumes:
@@ -98,20 +92,20 @@ spec:
       containers:
       - name: zabbix-server
         image: monitoringartist/zabbix-xxl:latest
-          ports:
+        ports:
           - containerPort: 162
             name: snmptrapd
           - containerPort: 10051
             name: zabbix-trapper
           - containerPort: 10052
             name: zabbix-jmx
-          env:
+        env:
           - name: ZS_DBUser
             value: zabbix
           - name: ZS_DBPassword
             value: my_password
           - name: ZS_DBHost
-            value: zabbix-db-svc
+            value: zabbix-db
           - name: ZS_enabled
             value: "true"
           - name: ZA_enabled
